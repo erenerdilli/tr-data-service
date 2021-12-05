@@ -10,10 +10,7 @@ import com.tr.eren.tradedataservice.common.dao.InstrumentDAO;
 import com.tr.eren.tradedataservice.common.dao.QuoteDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,8 +27,8 @@ public class CandleStickController {
         return Arrays.asList(new Quote());
     }
 
-    @GetMapping("/candlesticks/{isin}")
-    public ResponseEntity<List<CandlestickDTO>> retreiveCandlesticksByIsin(@PathVariable String isin) {
+    @GetMapping("/candlesticks")
+    public ResponseEntity<List<CandlestickDTO>> retreiveCandlesticksByIsin(@RequestParam String isin) {
         Instrument instrument = InstrumentDAO.instrumentList.stream().filter(i -> i.getIsin().equals(isin)).findFirst().orElse(null);
         if (instrument == null) {
             throw new InstrumentNotFoundException("isin: " + isin);
