@@ -8,6 +8,7 @@ import com.tr.eren.tradedataservice.common.dao.QuoteDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -29,23 +30,36 @@ public class CandlestickServiceImpl implements CandlestickService {
         LocalDateTime requestedTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         quotes.addAll(quoteDAO.getQuotesByIsin(isin, requestedTime));
 
+        // Map grouping qutes by DateTime
         Map<LocalDateTime, List<Quote>> map = quotes.stream().collect(Collectors.groupingBy(Quote::getDateTimeMinutes));
+
+        // Fill in the missing timestamps
+        if (!map.isEmpty()) {
+            for (int i = 29; i >= 0; i--) {
+                LocalDateTime keyTime = requestedTime.minusMinutes(i);
+                if (!map.containsKey(keyTime)) {
+                    if (map.containsKey(keyTime.minusMinutes(i + 1)))
+                        map.put(keyTime, map.get(keyTime.minusMinutes(i + 1)));
+                }
+            }
+        }
+
         for (Map.Entry<LocalDateTime, List<Quote>> entry : map.entrySet()) {
+            LocalDateTime openTimeStamp = entry.getKey();
+            BigDecimal openPrice = entry.getValue().stream().findFirst().orElse(null).getPrice();
+            BigDecimal highPrice = entry.getValue().stream().max(Comparator.comparing(Quote::getPrice)).orElse(null).getPrice();
+            BigDecimal lowPrice = entry.getValue().stream().min(Comparator.comparing(Quote::getPrice)).orElse(null).getPrice();
+            BigDecimal closePrice = entry.getValue().stream().reduce((first, second) -> second).orElse(null).getPrice();
+            LocalDateTime closeTimestamp = openTimeStamp.plusMinutes(1);
             Candlestick candlestick = new
-                    Candlestick(entry.getKey(),
-                    entry.getValue().stream().findFirst().orElse(null).getPrice(),
-                    entry.getValue().stream().max(Comparator.comparing(Quote::getPrice)).orElse(null).getPrice(),
-                    entry.getValue().stream().min(Comparator.comparing(Quote::getPrice)).orElse(null).getPrice(),
-                    entry.getValue().stream().reduce((first, second) -> second).orElse(null).getPrice(),
-                    entry.getValue().stream().findFirst().orElse(null).getDateTimeMinutes().plusMinutes(1));
+                    Candlestick(openTimeStamp,
+                    openPrice,
+                    highPrice,
+                    lowPrice,
+                    closePrice,
+                    closeTimestamp);
             candlesticks.add(CandlestickDTOMapper.map(candlestick));
         }
-        // Fill in the missing timestamps
-//        for (int i = 0; i < 30; i++) {
-//            if (!map.containsKey(requestedTime.truncatedTo(ChronoUnit.MINUTES).minusMinutes(i))) {
-//                map.get(requestedTime.truncatedTo(ChronoUnit.MINUTES).minusMinutes(i-1));
-//            }
-//        }
 
         return candlesticks;
     }

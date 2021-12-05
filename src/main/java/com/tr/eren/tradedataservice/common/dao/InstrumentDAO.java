@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InstrumentDAO {
+    /*
+    * Datasource for Instruments
+     */
     public static List<Instrument> instrumentList = new ArrayList<>();
 
-//    public static void groupList() {
-//        Map<LocalDateTime, List<Quote>> map = quoteList.stream().collect(Collectors.groupingBy(Quote::getDateTimeMinutes));
-//    }
 
     public static Instrument saveInstrument(Instrument instrument) throws InvalidAttributeValueException {
         if (instrument != null) {
@@ -27,6 +27,7 @@ public class InstrumentDAO {
                 break;
             }
         }
+        // TODO: Call the function to remove quotes with given isin
     }
 
 

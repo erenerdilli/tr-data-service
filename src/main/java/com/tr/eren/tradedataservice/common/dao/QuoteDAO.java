@@ -11,9 +11,16 @@ import java.util.stream.Collectors;
 
 @Component
 public class QuoteDAO {
+    /*
+     * Datasource for Quotes
+     */
     public static Map<String, List<Quote>> quoteMap = new HashMap<>();
 
     public List<Quote> getQuotesByIsin(String isin, LocalDateTime requestedTime) {
         return quoteMap.get(isin).stream().filter(x -> x.getDateTimeMinutes().isBefore(requestedTime) && x.getDateTimeMinutes().isAfter(requestedTime.minusMinutes(30))).collect(Collectors.toList());
+    }
+
+    public static void removeQuotesByIsin(String isin) {
+        //TODO: Implement quote removal from datasource
     }
 }
