@@ -5,6 +5,7 @@ import com.tr.eren.tradedataservice.api.mapper.CandlestickDTOMapper;
 import com.tr.eren.tradedataservice.api.model.Candlestick;
 import com.tr.eren.tradedataservice.api.model.Quote;
 import com.tr.eren.tradedataservice.common.dao.QuoteDAO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CandlestickServiceImpl implements CandlestickService {
 
@@ -25,10 +27,12 @@ public class CandlestickServiceImpl implements CandlestickService {
 
     @Override
     public List<CandlestickDTO> getCandlesticks(String isin) {
+        log.info("Processing instrument: " + isin);
         List<CandlestickDTO> candlesticks = new ArrayList<>();
         List<Quote> quotes = new ArrayList<>();
         // Get the time of request. (This could also be fetched from controller for more accuracy but I wanted to separate logic from controller)
         LocalDateTime requestedTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        log.info("Request time is: " + requestedTime);
         quotes.addAll(quoteDAO.getQuotesByIsin(isin, requestedTime));
 
         // Map grouping quotes by DateTime

@@ -7,6 +7,7 @@ import com.tr.eren.tradedataservice.api.model.QuoteUpdate;
 import com.tr.eren.tradedataservice.common.dao.InstrumentDAO;
 import com.tr.eren.tradedataservice.common.dao.QuoteDAO;
 import com.tr.eren.tradedataservice.common.mapper.JsonToPojoMapper;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.management.InvalidAttributeValueException;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.*;
 **
 * Handler class for messages fetched from websocket
  */
+@Slf4j
 public class MessageHandler {
 
     public static void handleInstrumentMessage(String message) throws InvalidAttributeValueException {
@@ -22,6 +24,7 @@ public class MessageHandler {
         try {
             instrumentEvent = JsonToPojoMapper.mapInstrumentEvent(message);
         } catch (JsonProcessingException e) {
+            log.error("Unable to process json: " + message);
             e.printStackTrace();
         }
         if (instrumentEvent != null) {
@@ -33,6 +36,7 @@ public class MessageHandler {
                     InstrumentDAO.removeInstrumentByIsin(instrumentEvent.getData().getIsin());
                     break;
                 default:
+                    log.error("Invalid attribute value: " + instrumentEvent.getType());
                     throw new InvalidAttributeValueException("Invalid value: " + instrumentEvent.getType());
             }
         }
@@ -43,6 +47,7 @@ public class MessageHandler {
         try {
             quoteUpdate = JsonToPojoMapper.mapQuteUpdate(message);
         } catch (JsonProcessingException e) {
+            log.error("Unable to process json: " + message);
             e.printStackTrace();
         }
 

@@ -22,7 +22,7 @@ app:
   image: app
   container_name: app
   environment:
-  SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
+    SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
   ports:
     - "8080:8080"
   depends_on:
