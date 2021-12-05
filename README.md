@@ -13,7 +13,7 @@ This application can be run through source code with a compatible IDE or by runn
 - The project contains a Dockerfile in the root directory for any docker image creation
 - Simply run docker by building image with this Dockerfile or
 - -or
-- Add to your docker-compose.yml following configuration
+- Copy the code to where your docker-compose.yml rests and add to your docker-compose.yml following configuration
 ```
 app:
   build:
@@ -30,3 +30,8 @@ app:
 ```
 - Then run command ```docker-compose up -d```
 
+## Documentation
+This application uses Swagger for api documentation. Documentation ui can be found at url ```http://localhost:8080/swagger-ui.html``` after running the application.
+
+## Monitoring
+This application uses Spring Actuator with Hal Explorer for monitoring of web api. For monitoring web ui simply navigate to ```http://localhost:8080/```
