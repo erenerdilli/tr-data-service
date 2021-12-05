@@ -3,7 +3,6 @@ package com.tr.eren.tradedataservice.api.controller;
 import com.tr.eren.tradedataservice.api.dto.CandlestickDTO;
 import com.tr.eren.tradedataservice.api.exception.InstrumentNotFoundException;
 import com.tr.eren.tradedataservice.api.exception.NoQuotesFoundException;
-import com.tr.eren.tradedataservice.api.model.Candlestick;
 import com.tr.eren.tradedataservice.api.model.Instrument;
 import com.tr.eren.tradedataservice.api.model.Quote;
 import com.tr.eren.tradedataservice.api.service.CandlestickService;
@@ -32,7 +31,7 @@ public class CandleStickController {
     }
 
     @GetMapping("/candlesticks/{isin}")
-    public ResponseEntity<List<CandlestickDTO>> retreiveQuotesByIsin(@PathVariable String isin) {
+    public ResponseEntity<List<CandlestickDTO>> retreiveCandlesticksByIsin(@PathVariable String isin) {
         Instrument instrument = InstrumentDAO.instrumentList.stream().filter(i -> i.getIsin().equals(isin)).findFirst().orElse(null);
         if (instrument == null) {
             throw new InstrumentNotFoundException("isin: " + isin);

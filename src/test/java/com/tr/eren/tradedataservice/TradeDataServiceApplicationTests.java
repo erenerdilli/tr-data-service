@@ -33,4 +33,9 @@ class TradeDataServiceApplicationTests {
 		assertThat(quoteUpdate.getData().getPrice()).isEqualTo(BigDecimal.valueOf(489));
 	}
 
+	@Test
+	void getQuotesByIsinTest() {
+
+	}
+
 }

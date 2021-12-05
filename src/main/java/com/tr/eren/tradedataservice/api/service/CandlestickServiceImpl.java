@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -25,7 +26,8 @@ public class CandlestickServiceImpl implements CandlestickService {
     public List<CandlestickDTO> getCandlesticks(String isin) {
         List<CandlestickDTO> candlesticks = new ArrayList<>();
         List<Quote> quotes = new ArrayList<>();
-        quotes.addAll(quoteDAO.getQuotesByIsin(isin));
+        LocalDateTime requestedTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        quotes.addAll(quoteDAO.getQuotesByIsin(isin, requestedTime));
 
         Map<LocalDateTime, List<Quote>> map = quotes.stream().collect(Collectors.groupingBy(Quote::getDateTimeMinutes));
         for (Map.Entry<LocalDateTime, List<Quote>> entry : map.entrySet()) {
@@ -38,6 +40,13 @@ public class CandlestickServiceImpl implements CandlestickService {
                     entry.getValue().stream().findFirst().orElse(null).getDateTimeMinutes().plusMinutes(1));
             candlesticks.add(CandlestickDTOMapper.map(candlestick));
         }
+        // Fill in the missing timestamps
+//        for (int i = 0; i < 30; i++) {
+//            if (!map.containsKey(requestedTime.truncatedTo(ChronoUnit.MINUTES).minusMinutes(i))) {
+//                map.get(requestedTime.truncatedTo(ChronoUnit.MINUTES).minusMinutes(i-1));
+//            }
+//        }
+
         return candlesticks;
     }
 }
