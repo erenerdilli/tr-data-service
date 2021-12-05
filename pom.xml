@@ -68,6 +68,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>trade-data-service</finalName>
 	</build>
 
 </project>
