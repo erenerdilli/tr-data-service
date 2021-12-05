@@ -7,6 +7,12 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/*
+**
+* Class for mapping our model to dto
+*
+ */
+
 @Data
 @Builder
 @AllArgsConstructor

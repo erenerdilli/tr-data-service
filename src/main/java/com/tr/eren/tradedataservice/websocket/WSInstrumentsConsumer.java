@@ -36,7 +36,7 @@ public class WSInstrumentsConsumer extends TextWebSocketHandler {
 
         String instrumentEventJson = message.getPayload();
 
-        // Send the message string to jsonhandler
+        // Send the message string to message handler
         MessageHandler.handleInstrumentMessage(instrumentEventJson);
     }
 

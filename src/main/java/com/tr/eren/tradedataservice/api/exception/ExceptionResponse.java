@@ -5,6 +5,11 @@ import lombok.Data;
 
 import java.util.Date;
 
+/*
+**
+* Model for returning exception responses
+ */
+
 @Data
 @AllArgsConstructor
 public class ExceptionResponse {

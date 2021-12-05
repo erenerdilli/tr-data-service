@@ -27,10 +27,11 @@ public class CandlestickServiceImpl implements CandlestickService {
     public List<CandlestickDTO> getCandlesticks(String isin) {
         List<CandlestickDTO> candlesticks = new ArrayList<>();
         List<Quote> quotes = new ArrayList<>();
+        // Get the time of request. (This could also be fetched from controller for more accuracy but I wanted to separate logic from controller)
         LocalDateTime requestedTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         quotes.addAll(quoteDAO.getQuotesByIsin(isin, requestedTime));
 
-        // Map grouping qutes by DateTime
+        // Map grouping quotes by DateTime
         Map<LocalDateTime, List<Quote>> map = quotes.stream().collect(Collectors.groupingBy(Quote::getDateTimeMinutes));
 
         // Fill in the missing timestamps
@@ -46,6 +47,7 @@ public class CandlestickServiceImpl implements CandlestickService {
 
         for (Map.Entry<LocalDateTime, List<Quote>> entry : map.entrySet()) {
             LocalDateTime openTimeStamp = entry.getKey();
+            // Some stream operations to get desired values (e.g max, min, first)
             BigDecimal openPrice = entry.getValue().stream().findFirst().orElse(null).getPrice();
             BigDecimal highPrice = entry.getValue().stream().max(Comparator.comparing(Quote::getPrice)).orElse(null).getPrice();
             BigDecimal lowPrice = entry.getValue().stream().min(Comparator.comparing(Quote::getPrice)).orElse(null).getPrice();

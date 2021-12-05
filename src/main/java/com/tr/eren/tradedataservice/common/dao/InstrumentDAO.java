@@ -27,7 +27,8 @@ public class InstrumentDAO {
                 break;
             }
         }
-        // TODO: Call the function to remove quotes with given isin
+        // Call the function to remove quotes with given isin
+        QuoteDAO.removeQuotesByIsin(isin);
     }
 
 

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Slf4j
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class InstrumentNotFoundException extends RuntimeException {
+    // Throw this exception if no instrument with given ISIN is found
     public InstrumentNotFoundException(String message) {
         super(message);
         log.error("Resource not found: " + message);

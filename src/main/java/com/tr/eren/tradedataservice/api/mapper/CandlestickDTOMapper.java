@@ -3,6 +3,10 @@ package com.tr.eren.tradedataservice.api.mapper;
 import com.tr.eren.tradedataservice.api.dto.CandlestickDTO;
 import com.tr.eren.tradedataservice.api.model.Candlestick;
 
+/*
+**
+* Mapper class for Candlestick to CandlestickDTO mapping
+ */
 public class CandlestickDTOMapper {
     public static CandlestickDTO map(Candlestick candlestick) {
         return CandlestickDTO.builder()

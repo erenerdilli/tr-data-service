@@ -33,7 +33,7 @@ public class WSQuotesConsumer extends TextWebSocketHandler {
 
         String quoteUpdateJson = message.getPayload();
 
-        // Send the message string to jsonhandler
+        // Send the message string to message handler
         MessageHandler.handleQuoteMessage(quoteUpdateJson);
 
     }

@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tr.eren.tradedataservice.api.model.InstrumentEvent;
 import com.tr.eren.tradedataservice.api.model.QuoteUpdate;
-
+/*
+**
+* Mapper class for mapping json strings to POJO
+ */
 public class JsonToPojoMapper {
 
     public static InstrumentEvent mapInstrumentEvent(String jsonObject) throws JsonProcessingException {

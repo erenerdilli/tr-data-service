@@ -11,7 +11,10 @@ import com.tr.eren.tradedataservice.common.mapper.JsonToPojoMapper;
 import javax.management.InvalidAttributeValueException;
 import java.time.LocalDateTime;
 import java.util.*;
-
+/*
+**
+* Handler class for messages fetched from websocket
+ */
 public class MessageHandler {
 
     public static void handleInstrumentMessage(String message) throws InvalidAttributeValueException {
