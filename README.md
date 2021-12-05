@@ -25,7 +25,7 @@ app:
   SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
   ports:
     - "8080:8080"
-      depends_on:
+  depends_on:
     - java
 ```
 - Then run command ```docker-compose up -d```
