@@ -2,7 +2,7 @@
 This service fetches live data from a partner web socket and exposes it in form of candlesticks.
 
 ## How to Run
-This application can be run through source code with a compatible IDE or by running the docker image.
+The application can be run through source code with a compatible IDE or by running the docker image.
 
 #### Through Source Code
 - Simply clone or copy the source code to preferred directory and open it in a compatible IDE (e.g Intellij Idea)
