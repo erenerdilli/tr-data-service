@@ -22,5 +22,6 @@ public class QuoteDAO {
 
     public static void removeQuotesByIsin(String isin) {
         //TODO: Implement quote removal from datasource
+        quoteMap.remove(isin);
     }
 }
