@@ -27,7 +27,7 @@ public class CandleStickController {
 
     @GetMapping("/candlesticks/quotes")
     public List<Quote> retreiveAllQuotes() {
-        return Arrays.asList(new Quote());
+        return null;
     }
 
     @GetMapping("/candlesticks")

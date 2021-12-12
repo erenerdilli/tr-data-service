@@ -51,13 +51,14 @@ public class MessageHandler {
         }
     }
 
-    public void handleQuoteMessage(String message) throws InvalidAttributeValueException {
+    public QuoteUpdate handleQuoteMessage(String message) throws InvalidAttributeValueException {
         QuoteUpdate quoteUpdate = new QuoteUpdate();
         try {
             quoteUpdate = JsonToPojoMapper.mapQuteUpdate(message);
         } catch (JsonProcessingException e) {
             log.error("Unable to process json: " + message);
             e.printStackTrace();
+            return quoteUpdate;
         }
 
         if (quoteUpdate != null) {
@@ -74,7 +75,7 @@ public class MessageHandler {
                 quoteDAOImpl.getQuoteMap().put(isin, Arrays.asList(quoteToBeAdded));
             }
         }
-
+        return quoteUpdate;
     }
 
 }

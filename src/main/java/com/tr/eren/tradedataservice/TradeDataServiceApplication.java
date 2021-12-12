@@ -14,7 +14,6 @@ public class TradeDataServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TradeDataServiceApplication.class, args);
-
 	}
 
 }

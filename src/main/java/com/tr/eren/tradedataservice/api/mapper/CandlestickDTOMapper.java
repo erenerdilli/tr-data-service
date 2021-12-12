@@ -21,6 +21,12 @@ public class CandlestickDTOMapper {
 
     public static Candlestick mapToEntity(CandlestickDTO candlestickDTO) {
         //TODO: Implement mapping to entity
-        return new Candlestick();
+        Candlestick candlestick = new Candlestick(candlestickDTO.getOpenTimestamp(),
+                candlestickDTO.getOpenPrice(),
+                candlestickDTO.getHighPrice(),
+                candlestickDTO.getLowPrice(),
+                candlestickDTO.getClosePrice(),
+                candlestickDTO.getCloseTimestamp());
+        return candlestick;
     }
 }
