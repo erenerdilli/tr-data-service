@@ -4,14 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tr.eren.tradedataservice.api.dto.CandlestickDTO;
 import com.tr.eren.tradedataservice.api.mapper.CandlestickDTOMapper;
 import com.tr.eren.tradedataservice.api.model.*;
-import com.tr.eren.tradedataservice.common.dao.InstrumentDAO;
-import com.tr.eren.tradedataservice.common.dao.QuoteDAO;
+import com.tr.eren.tradedataservice.common.dao.InstrumentDAOImpl;
+import com.tr.eren.tradedataservice.common.dao.QuoteDAOImpl;
 import com.tr.eren.tradedataservice.common.handler.MessageHandler;
 import com.tr.eren.tradedataservice.common.mapper.JsonToPojoMapper;
+import com.tr.eren.tradedataservice.common.model.Instrument;
+import com.tr.eren.tradedataservice.common.model.InstrumentEvent;
+import com.tr.eren.tradedataservice.common.model.Quote;
+import com.tr.eren.tradedataservice.common.model.QuoteUpdate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.management.InvalidAttributeValueException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +30,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TradeDataServiceApplicationTests {
 
 	@Autowired
-	private QuoteDAO quoteDAO;
+	private QuoteDAOImpl quoteDAOImpl;
+
+	@Autowired
+	private InstrumentDAOImpl instrumentDAOImpl;
+
+	@Autowired
+	private MessageHandler messageHandler;
 
 	@Test
 	void contextLoads() {
@@ -56,7 +64,7 @@ class TradeDataServiceApplicationTests {
 
 	@Test
 	void getQuotesByIsinTest() {
-		List<Quote> quotes = quoteDAO.getQuotesByIsin("ST6610357281", LocalDateTime.now());
+		List<Quote> quotes = quoteDAOImpl.getQuotesByIsin("ST6610357281", LocalDateTime.now());
 		assertThat(quotes.size()).isGreaterThan(0);
 	}
 
@@ -120,7 +128,7 @@ class TradeDataServiceApplicationTests {
 		Mockito.when(candlestick.getClosePrice()).thenReturn(BigDecimal.valueOf(1500));
 		Mockito.when(candlestick.getCloseTimestamp()).thenReturn(LocalDateTime.of(2021,12,5,20,31));
 
-		CandlestickDTO candlestickDTO = CandlestickDTOMapper.map(candlestick);
+		CandlestickDTO candlestickDTO = CandlestickDTOMapper.mapToDTO(candlestick);
 		assertThat(candlestickDTO.getOpenTimestamp()).isEqualTo(LocalDateTime.of(2021, 12, 5, 20, 30));
 		assertThat(candlestickDTO.getOpenPrice()).isEqualTo(BigDecimal.valueOf(1000));
 		assertThat(candlestickDTO.getHighPrice()).isEqualTo(BigDecimal.valueOf(1500));
@@ -142,15 +150,15 @@ class TradeDataServiceApplicationTests {
 			String messageDelete = "{ \"data\": { \"description\": \"convallis repudiandae iisque homero maiorum\", \"isin\": \"RG8P83C62E51\" }, \"type\": \"DELETE\" }";
 			String messageAdd = "{ \"data\": { \"description\": \"convallis repudiandae iisque homero maiorum\", \"isin\": \"RG8P83C62E51\" }, \"type\": \"ADD\" }";
 
-			MessageHandler.handleInstrumentMessage(messageAdd);
-			Instrument instrument = InstrumentDAO.instrumentList.stream().filter(x -> x.getIsin().equals("RG8P83C62E51")).findFirst().get();
+			messageHandler.handleInstrumentMessage(messageAdd);
+			Instrument instrument = instrumentDAOImpl.getInstrumentList().stream().filter(x -> x.getIsin().equals("RG8P83C62E51")).findFirst().get();
 
-			assertThat(InstrumentDAO.instrumentList.size()).isGreaterThan(0);
+			assertThat(instrumentDAOImpl.getInstrumentList().size()).isGreaterThan(0);
 			assertThat(instrument.getIsin()).isEqualTo("RG8P83C62E51");
 			assertThat(instrument.getDescription()).isEqualTo("convallis repudiandae iisque homero maiorum");
 
-			MessageHandler.handleInstrumentMessage(messageDelete);
-			instrument = InstrumentDAO.instrumentList.stream().filter(x -> x.getIsin().equals("RG8P83C62E51")).findFirst().orElse(null);
+			messageHandler.handleInstrumentMessage(messageDelete);
+			instrument = instrumentDAOImpl.getInstrumentList().stream().filter(x -> x.getIsin().equals("RG8P83C62E51")).findFirst().orElse(null);
 			assertThat(instrument).isNull();
 		}
 
@@ -159,11 +167,11 @@ class TradeDataServiceApplicationTests {
 			String messageOrigin = "{ \"data\": { \"price\": 1268.108, \"isin\": \"OY4208280445\" }, \"type\": \"QUOTE\" }";
 			String messageUpdated = "{ \"data\": { \"price\": 1500.108, \"isin\": \"OY4208280445\" }, \"type\": \"QUOTE\" }";
 
-			MessageHandler.handleQuoteMessage(messageOrigin);
-			assertThat(QuoteDAO.quoteMap.containsKey("OY4208280445")).isTrue();
+			messageHandler.handleQuoteMessage(messageOrigin);
+			assertThat(QuoteDAOImpl.quoteMap.containsKey("OY4208280445")).isTrue();
 
-			MessageHandler.handleQuoteMessage(messageUpdated);
-			assertThat(QuoteDAO.quoteMap.get("OY4208280445").size() > 0).isTrue();
+			messageHandler.handleQuoteMessage(messageUpdated);
+			assertThat(QuoteDAOImpl.quoteMap.get("OY4208280445").size() > 0).isTrue();
 		}
 	}
 

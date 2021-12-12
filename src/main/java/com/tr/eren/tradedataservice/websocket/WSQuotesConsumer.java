@@ -3,6 +3,7 @@ package com.tr.eren.tradedataservice.websocket;
 import com.tr.eren.tradedataservice.common.handler.MessageHandler;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHttpHeaders;
@@ -17,6 +18,9 @@ import java.util.concurrent.ExecutionException;
 public class WSQuotesConsumer extends TextWebSocketHandler {
     @Value("${websocket.uri.quotes}")
     private String wsUri; // value can't be set from properties
+
+    @Autowired
+    private MessageHandler messageHandler;
 
     @Getter
     private WebSocketSession quotesClientSession;
@@ -34,7 +38,7 @@ public class WSQuotesConsumer extends TextWebSocketHandler {
         String quoteUpdateJson = message.getPayload();
 
         // Send the message string to message handler
-        MessageHandler.handleQuoteMessage(quoteUpdateJson);
+        messageHandler.handleQuoteMessage(quoteUpdateJson);
 
     }
 }

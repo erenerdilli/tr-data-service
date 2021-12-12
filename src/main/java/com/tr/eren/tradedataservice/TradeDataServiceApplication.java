@@ -15,27 +15,6 @@ public class TradeDataServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TradeDataServiceApplication.class, args);
 
-		try {
-			WSInstrumentsConsumer webSocketConsumer = new WSInstrumentsConsumer();
-			webSocketConsumer.getInstrumentsClientSession().sendMessage(new TextMessage("initialize"));
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			WSQuotesConsumer webSocketConsumer = new WSQuotesConsumer();
-			webSocketConsumer.getQuotesClientSession().sendMessage(new TextMessage("initialize"));
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

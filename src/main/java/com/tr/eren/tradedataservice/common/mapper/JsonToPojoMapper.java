@@ -2,8 +2,8 @@ package com.tr.eren.tradedataservice.common.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tr.eren.tradedataservice.api.model.InstrumentEvent;
-import com.tr.eren.tradedataservice.api.model.QuoteUpdate;
+import com.tr.eren.tradedataservice.common.model.InstrumentEvent;
+import com.tr.eren.tradedataservice.common.model.QuoteUpdate;
 /*
 **
 * Mapper class for mapping json strings to POJO

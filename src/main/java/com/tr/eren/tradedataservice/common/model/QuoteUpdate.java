@@ -1,17 +1,16 @@
-package com.tr.eren.tradedataservice.api.model;
+package com.tr.eren.tradedataservice.common.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class InstrumentEvent {
+public class QuoteUpdate {
     public enum Type {
-        ADD,
-        DELETE
+        QUOTE
     }
 
     @JsonProperty("data")
-    private Instrument data;
+    private Quote data;
     @JsonProperty("type")
-    private Type type;
+    private QuoteUpdate.Type type;
 }

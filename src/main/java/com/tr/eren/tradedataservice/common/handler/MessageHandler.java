@@ -1,13 +1,15 @@
 package com.tr.eren.tradedataservice.common.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.tr.eren.tradedataservice.api.model.InstrumentEvent;
-import com.tr.eren.tradedataservice.api.model.Quote;
-import com.tr.eren.tradedataservice.api.model.QuoteUpdate;
+import com.tr.eren.tradedataservice.common.model.InstrumentEvent;
+import com.tr.eren.tradedataservice.common.model.Quote;
+import com.tr.eren.tradedataservice.common.model.QuoteUpdate;
 import com.tr.eren.tradedataservice.common.dao.InstrumentDAO;
-import com.tr.eren.tradedataservice.common.dao.QuoteDAO;
+import com.tr.eren.tradedataservice.common.dao.QuoteDAOImpl;
 import com.tr.eren.tradedataservice.common.mapper.JsonToPojoMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.management.InvalidAttributeValueException;
 import java.time.LocalDateTime;
@@ -17,9 +19,16 @@ import java.util.*;
 * Handler class for messages fetched from websocket
  */
 @Slf4j
+@Component
 public class MessageHandler {
 
-    public static void handleInstrumentMessage(String message) throws InvalidAttributeValueException {
+    @Autowired
+    private QuoteDAOImpl quoteDAOImpl;
+
+    @Autowired
+    private InstrumentDAO instrumentDAO;
+
+    public void handleInstrumentMessage(String message) throws InvalidAttributeValueException {
         InstrumentEvent instrumentEvent = new InstrumentEvent();
         try {
             instrumentEvent = JsonToPojoMapper.mapInstrumentEvent(message);
@@ -30,10 +39,10 @@ public class MessageHandler {
         if (instrumentEvent != null) {
             switch (instrumentEvent.getType()) {
                 case ADD:
-                    InstrumentDAO.saveInstrument(instrumentEvent.getData());
+                    instrumentDAO.saveInstrument(instrumentEvent.getData());
                     break;
                 case DELETE:
-                    InstrumentDAO.removeInstrumentByIsin(instrumentEvent.getData().getIsin());
+                    instrumentDAO.removeInstrumentByIsin(instrumentEvent.getData().getIsin());
                     break;
                 default:
                     log.error("Invalid attribute value: " + instrumentEvent.getType());
@@ -42,7 +51,7 @@ public class MessageHandler {
         }
     }
 
-    public static void handleQuoteMessage(String message) throws InvalidAttributeValueException {
+    public void handleQuoteMessage(String message) throws InvalidAttributeValueException {
         QuoteUpdate quoteUpdate = new QuoteUpdate();
         try {
             quoteUpdate = JsonToPojoMapper.mapQuteUpdate(message);
@@ -57,12 +66,12 @@ public class MessageHandler {
 
             String isin = quoteToBeAdded.getIsin();
 
-            if (QuoteDAO.quoteMap.containsKey(isin)) {
-                List<Quote> updatedList = new ArrayList<>(QuoteDAO.quoteMap.get(isin));
+            if (quoteDAOImpl.getQuoteMap().containsKey(isin)) {
+                List<Quote> updatedList = new ArrayList<>(quoteDAOImpl.getQuoteMap().get(isin));
                 updatedList.add(quoteToBeAdded);
-                QuoteDAO.quoteMap.put(isin, updatedList);
+                quoteDAOImpl.getQuoteMap().put(isin, updatedList);
             } else {
-                QuoteDAO.quoteMap.put(isin, Arrays.asList(quoteToBeAdded));
+                quoteDAOImpl.getQuoteMap().put(isin, Arrays.asList(quoteToBeAdded));
             }
         }
 
