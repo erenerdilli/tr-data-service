@@ -8,7 +8,7 @@ import com.tr.eren.tradedataservice.api.model.Candlestick;
 * Mapper class for Candlestick to CandlestickDTO mapping
  */
 public class CandlestickDTOMapper {
-    public static CandlestickDTO map(Candlestick candlestick) {
+    public static CandlestickDTO mapToDTO(Candlestick candlestick) {
         return CandlestickDTO.builder()
                 .openTimestamp(candlestick.getOpenTimestamp())
                 .openPrice(candlestick.getOpenPrice())
@@ -17,5 +17,16 @@ public class CandlestickDTOMapper {
                 .closePrice(candlestick.getClosePrice())
                 .closeTimestamp(candlestick.getCloseTimestamp())
                 .build();
+    }
+
+    public static Candlestick mapToEntity(CandlestickDTO candlestickDTO) {
+        //TODO: Implement mapping to entity
+        Candlestick candlestick = new Candlestick(candlestickDTO.getOpenTimestamp(),
+                candlestickDTO.getOpenPrice(),
+                candlestickDTO.getHighPrice(),
+                candlestickDTO.getLowPrice(),
+                candlestickDTO.getClosePrice(),
+                candlestickDTO.getCloseTimestamp());
+        return candlestick;
     }
 }

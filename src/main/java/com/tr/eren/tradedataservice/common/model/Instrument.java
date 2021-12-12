@@ -1,4 +1,4 @@
-package com.tr.eren.tradedataservice.api.model;
+package com.tr.eren.tradedataservice.common.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

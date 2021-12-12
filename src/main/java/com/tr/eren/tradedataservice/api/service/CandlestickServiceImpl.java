@@ -3,8 +3,8 @@ package com.tr.eren.tradedataservice.api.service;
 import com.tr.eren.tradedataservice.api.dto.CandlestickDTO;
 import com.tr.eren.tradedataservice.api.mapper.CandlestickDTOMapper;
 import com.tr.eren.tradedataservice.api.model.Candlestick;
-import com.tr.eren.tradedataservice.api.model.Quote;
 import com.tr.eren.tradedataservice.common.dao.QuoteDAO;
+import com.tr.eren.tradedataservice.common.model.Quote;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,14 +43,15 @@ public class CandlestickServiceImpl implements CandlestickService {
             for (int i = 29; i >= 0; i--) {
                 LocalDateTime keyTime = requestedTime.minusMinutes(i);
                 if (!map.containsKey(keyTime)) {
-                    if (map.containsKey(keyTime.minusMinutes(i + 1)))
+                    if (map.containsKey(keyTime.minusMinutes(i + 1))) {
                         map.put(keyTime, map.get(keyTime.minusMinutes(i + 1)));
+                    }
                 }
             }
         }
-
         for (Map.Entry<LocalDateTime, List<Quote>> entry : map.entrySet()) {
             LocalDateTime openTimeStamp = entry.getKey();
+
             // Some stream operations to get desired values (e.g max, min, first)
             BigDecimal openPrice = entry.getValue().stream().findFirst().orElse(null).getPrice();
             BigDecimal highPrice = entry.getValue().stream().max(Comparator.comparing(Quote::getPrice)).orElse(null).getPrice();
@@ -62,11 +63,9 @@ public class CandlestickServiceImpl implements CandlestickService {
                     openPrice,
                     highPrice,
                     lowPrice,
-                    closePrice,
-                    closeTimestamp);
-            candlesticks.add(CandlestickDTOMapper.map(candlestick));
+                    closePrice, closeTimestamp);
+            candlesticks.add(CandlestickDTOMapper.mapToDTO(candlestick));
         }
-
         return candlesticks;
     }
 }
