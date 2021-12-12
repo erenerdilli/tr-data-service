@@ -6,7 +6,6 @@ import com.tr.eren.tradedataservice.api.mapper.CandlestickDTOMapper;
 import com.tr.eren.tradedataservice.api.model.Candlestick;
 import com.tr.eren.tradedataservice.api.service.CandlestickService;
 import com.tr.eren.tradedataservice.common.dao.InstrumentDAO;
-import com.tr.eren.tradedataservice.common.dao.InstrumentDAOImpl;
 import com.tr.eren.tradedataservice.common.dao.QuoteDAO;
 import com.tr.eren.tradedataservice.common.dao.QuoteDAOImpl;
 import com.tr.eren.tradedataservice.common.handler.MessageHandler;
